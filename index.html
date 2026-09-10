@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrainTrack — SVF Crew Training System</title>
+<link rel="stylesheet" href="main.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav" style="display:none">
+  <div class="nav-brand" onclick="showView(currentRoleHome())">
+    <div class="nav-logo">Mc Donalds</div>
+    <div><div class="nav-title">TrainTrack</div><div class="nav-sub">SVF Monitoring System</div></div>
+  </div>
+  <div class="nav-links" id="navLinks"></div>
+  <button class="btn-nav-logout" onclick="logout()">Log Out</button>
+  
+</nav>
+
+
+
+<!-- ══ VIEW: LOGIN ══════════════════════════════════════════ -->
+<div id="view-login" class="view">
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-logo">McDo</div>
+      <div class="auth-brand">Kawit Highway</div>
+      <p class="auth-tagline">Station Verification Form<br>Crew Training Monitor</p>
+      <div class="auth-features">
+        <div class="auth-feat"><span class=""></span>Real-time GM Dashboard</div>
+        <div class="auth-feat"><span class=""></span>Quarterly Follow-Up Tracking</div>
+        <div class="auth-feat"><span class=""></span>Dynamic Station Management</div>
+        <div class="auth-feat"><span class=""></span>Overdue Training Alerts</div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card">
+        <h2 class="auth-heading">Welcome Back</h2>
+        <p class="auth-sub">Sign in to your account</p>
+        <div id="loginAlert" class="alert alert-error" style="display:none"></div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary btn-block" id="loginBtn" onclick="doLogin()">Sign In</button>
+        <div id="forgotBox" style="display:none; margin-top:15px;">
+
+          
+  <div class="divider">Forgot Password</div>
+  
+
+  <input type="text" id="fpUsername" class="form-control" placeholder="Enter username">
+  <input type="password" id="fpNewPass" class="form-control" placeholder="New password" style="margin-top:8px;">
+  <input type="password" id="fpConfirmPass" class="form-control" placeholder="Confirm password" style="margin-top:8px;">
+
+  <button class="btn btn-warning btn-block" style="margin-top:10px;" onclick="resetPassword()">
+    Reset Password
+  </button>
+</div>
+        <div class="divider">or</div>
+        <button class="btn btn-outline btn-block" onclick="showView('register')">Register as Crew Member</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: REGISTER ══════════════════════════════════════ -->
+<div id="view-register" class="view" style="display:none">
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-logo">McDo</div>
+      <div class="auth-brand">Join the Team</div>
+      <p class="auth-tagline">Create your crew account to access your personal training profile.</p>
+      <div class="auth-features">
+        <div class="auth-feat"><span class="auth-feat-dot"></span>Personal training dashboard</div>
+        <div class="auth-feat"><span class="auth-feat-dot"></span>Follow-up schedule view</div>
+        <div class="auth-feat"><span class="auth-feat-dot"></span>Progress tracking</div>
+      </div>
+    </div>
+    <div class="auth-right">
+      <div class="auth-card" style="max-width:460px">
+        <h2 class="auth-heading">Create Account</h2>
+        <p class="auth-sub">Register as a crew member</p>
+        <div id="registerAlert" class="alert" style="display:none"></div>
+        <div class="form-grid-2">
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="regName" class="form-control" placeholder="Juan Dela Cruz">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Birthday</label>
+            <input type="date" id="regBirthday" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date Hired</label>
+            <input type="date" id="regDateHired" class="form-control">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label class="form-label">Username</label>
+            <input type="text" id="regUsername" class="form-control"
+              placeholder="No spaces (e.g. juan_delacruz)" oninput="validateUsername(this)">
+            <div id="usernameHint" class="field-hint">Letters, numbers, and underscores only</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="regPassword" class="form-control" placeholder="Min. 6 characters">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" id="regConfirm" class="form-control" placeholder="Re-enter password">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" id="regBtn" onclick="doRegister()">Create Account</button>
+        <div class="divider">already have an account?</div>
+        <button class="btn btn-outline btn-block" onclick="showView('login')">Back to Sign In</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: DASHBOARD ═════════════════════════════════════ -->
+<div id="view-dashboard" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">GM Dashboard</div>
+      <div class="page-subtitle">General Manager — Training Analytics</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.75rem">
+      <span id="dashLastUpdated" class="last-updated"></span>
+      <button class="btn btn-ghost btn-sm" onclick="loadDashboard()">Refresh</button>
+      <button class="btn btn-primary btn-sm" onclick="openAddUserModal()">+ Add User</button>
+      <button class="btn btn-warning btn-sm" onclick="showView('manageUsers')">Manage Users</button>
+      <button class="nav-icon-btn" onclick="openGMSettingsModal()" title="Settings">
+  ⚙️
+</button>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card stat-red">  <div class="stat-value" id="dashTotalCrew">—</div>   <div class="stat-label">Total Crew</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="dashTotalStations">—</div><div class="stat-label">Total Stations</div></div>
+    <div class="stat-card stat-red">  <div class="stat-value" id="dashCrewTrained">—</div>  <div class="stat-label">Crew Trained</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="dashPassed">—</div>      <div class="stat-label">Initial Passes</div></div>
+    <div class="stat-card stat-red">  <div class="stat-value" id="dashPending">—</div>      <div class="stat-label">Pending Follow-Ups</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="dashOverdue">—</div>     <div class="stat-label">Overdue</div></div>
+  </div>
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-header">
+      <div class="card-title">Training Completion Rate</div>
+      <span id="dashPctLabel" class="pct-label">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill pf-bad" id="dashProgress" style="width:0%"></div></div>
+    <div class="progress-legend"><span>0%</span><span>Target: 100%</span></div>
+  </div>
+  <div class="two-col" style="margin-bottom:1.5rem">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header"><div class="card-title">Station Breakdown</div></div>
+      <div id="dashStationStats"><div class="loading-msg">Loading…</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-header"><div class="card-title">Recent Activity</div></div>
+      <div id="dashRecent"><div class="loading-msg">Loading…</div></div>
+    </div>
+  </div>
+  <div class="card card-danger" style="margin-bottom:1.5rem">
+    <div class="card-header">
+      <div class="card-title" style="color:var(--red)">Overdue Follow-Ups</div>
+      <span class="badge badge-fail" id="dashOverdueCount">0</span>
+    </div>
+    <div id="dashOverdueList"><div class="loading-msg">Loading…</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">All Crew Members</div>
+      <button class="btn btn-sm btn-primary" onclick="showView('mod')">Manage Records</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" class="search-input" id="dashCrewSearch" placeholder="Search crew…" oninput="filterCrewTable()">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Crew Member</th><th>Date Hired</th><th>Progress</th><th>Action</th><th>Status</th></tr></thead>
+        <tbody id="dashCrewBody"><tr><td colspan="4" class="td-empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: MONITORING ════════════════════════════════════ -->
+<div id="view-monitoring" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Training Monitoring</div>
+      <div class="page-subtitle">Pending and Overdue Follow-Up Tracker</div>
+    </div>
+    <button class="btn btn-sm btn-primary" onclick="exportCSV()">Export CSV</button>
+  </div>
+  <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat-card stat-yellow"><div class="stat-value" id="monPending">—</div>  <div class="stat-label">Pending</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="monOverdue">—</div>  <div class="stat-label">Overdue</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="monCrew">—</div>     <div class="stat-label">Total Crew</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="monStations">—</div> <div class="stat-label">Stations</div></div>
+  </div>
+  <div class="tabs" id="monTabBar">
+    <button class="tab active" onclick="switchTab('monTabs','monPendingTab',this,'monTabBar')">Pending</button>
+    <button class="tab" onclick="switchTab('monTabs','monOverdueTab',this,'monTabBar')">Overdue</button>
+    <button class="tab" onclick="switchTab('monTabs','monCrewTab',this,'monTabBar')">Crew List</button>
+    <button class="tab" onclick="switchTab('monTabs','monRecordsTab',this,'monTabBar')">All Records</button>
+  </div>
+  <div id="monTabs">
+    <div id="monPendingTab" class="tab-panel active">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Pending Follow-Up Trainings</div></div>
+        <div class="search-bar">
+          <input type="text" class="search-input" id="monPendingSearch" placeholder="Search…" oninput="filterTable('monPendingBody',this.value,'')">
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Crew</th><th>Station</th><th>Follow-Up</th><th>Due Date</th><th>Days Until Due</th><th>Status</th></tr></thead>
+          <tbody id="monPendingBody"><tr><td colspan="6" class="td-empty">Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div id="monOverdueTab" class="tab-panel">
+      <div class="card card-danger">
+        <div class="card-header"><div class="card-title" style="color:var(--red)">Overdue Follow-Up Trainings</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Crew</th><th>Station</th><th>Follow-Up</th><th>Was Due</th><th>Days Overdue</th><th>Priority</th></tr></thead>
+          <tbody id="monOverdueBody"><tr><td colspan="6" class="td-empty">Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div id="monCrewTab" class="tab-panel">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Crew Training Summary</div></div>
+        <div class="search-bar">
+          <input type="text" class="search-input" id="monCrewSearch" placeholder="Search crew…" oninput="filterTable('monCrewBody',this.value,'')">
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Name</th><th>Date Hired</th><th>Pass/Total</th><th>Progress</th></tr></thead>
+          <tbody id="monCrewBody"><tr><td colspan="4" class="td-empty">Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div id="monRecordsTab" class="tab-panel">
+      <div class="card">
+        <div class="card-header"><div class="card-title">All Training Records</div></div>
+        <div class="search-bar">
+          <input type="text" class="search-input" id="monRecordsSearch" placeholder="Search…"
+            oninput="filterTable('monRecordsBody',this.value,document.getElementById('monStFilter').value)">
+          <!-- FIX: station filter uses station_name (string match), consistent with data-station attr -->
+          <select class="form-control" style="width:175px" id="monStFilter"
+            onchange="filterTable('monRecordsBody',document.getElementById('monRecordsSearch').value,this.value)">
+            <option value="">All Stations</option>
+          </select>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Crew</th><th>Station</th><th>Initial Date</th><th>Initial</th><th>FU1</th><th>FU2</th><th>FU3</th><th>FU4</th><th>FU5</th><th>Updated</th></tr></thead>
+          <tbody id="monRecordsBody"><tr><td colspan="10" class="td-empty">Loading…</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: MANAGE USERS ═════════════════════════════════════ -->
+<div id="view-manageUsers" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Manage Users</div>
+      <div class="page-subtitle">GM Admin — Permanent Delete Control</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="loadUsers()">Refresh</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Created</th>
+            <th>Action</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody">
+          <tr><td colspan="5">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: MANAGER ON DUTY ═══════════════════════════════ -->
+<div id="view-mod" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Training Records</div>
+      <div class="page-subtitle">Manager on Duty — Encode and Update SVF Training Records</div>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Add Record</button>
+  </div>
+  <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="stat-card stat-red">   <div class="stat-value" id="modTotal">—</div>  <div class="stat-label">Total Records</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="modPassed">—</div> <div class="stat-label">Passed</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="modPending">—</div><div class="stat-label">Pending</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="modFailed">—</div> <div class="stat-label">Failed</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Training Records</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadMOD()">Refresh</button>
+    </div>
+    <div class="search-bar">
+      <input type="text" class="search-input" id="modSearch" placeholder="Search crew or station…" oninput="applyModFilters()">
+      <!-- FIX: store station_id in value, compare as string in filter -->
+      <select class="form-control" style="width:175px" id="modStFilter" onchange="applyModFilters()">
+        <option value="">All Stations</option>
+      </select>
+      <select class="form-control" style="width:145px" id="modStatFilter" onchange="applyModFilters()">
+        <option value="">All Statuses</option><option>Pass</option><option>Fail</option><option>Pending</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Crew Member</th><th>Station</th><th>Initial Date</th><th>Initial</th><th>FU1</th><th>FU2</th><th>FU3</th><th>FU4</th><th>FU5</th><th>Updated</th><th>Action</th></tr></thead>
+        <tbody id="modBody"><tr><td colspan="11" class="td-empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VIEW: STATIONS ══════════════════════════════════════ -->
+<div id="view-stations" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Stations Management</div>
+      <div class="page-subtitle">Add, Edit, Delete training stations dynamically</div>
+    </div>
+    <button class="btn btn-primary" onclick="openStAddModal()">+ New Station</button>
+  </div>
+  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="stat-card stat-red">   <div class="stat-value" id="stTotal">—</div><div class="stat-label">Total Stations</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="stRecs">—</div> <div class="stat-label">Training Records</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="stPass">—</div> <div class="stat-label">Total Passed</div></div>
+  </div>
+  <div id="stEmpty" class="card" style="display:none">
+    <div class="empty-state">
+      <div class="empty-icon">[ ]</div>
+      <h3>No Stations Yet</h3>
+      <p>Add your first training station to get started.</p>
+      <button class="btn btn-primary" style="margin-top:1rem" onclick="openStAddModal()">+ Add First Station</button>
+    </div>
+  </div>
+  <div id="stGrid" class="station-grid"></div>
+</div>
+
+<!-- ══ VIEW: CREW PROFILE ═══════════════════════════════════ -->
+<div id="view-profile" class="view page-wrapper" style="display:none">
+  <div class="profile-hero"><button class="profile-settings-btn"
+  onclick="openProfileSettingsModal()"
+  title="Settings">
+  ⚙
+</button>
+    <div class="profile-avatar" id="profileAvatar">—</div>
+    <div style="position:relative;z-index:1">
+      <div class="profile-name" id="profileName">Loading…</div>
+      <div class="profile-meta" id="profileMeta"></div>
+      <div id="profileBadge" style="margin-top:8px"></div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card stat-yellow"><div class="stat-value" id="profTotalSt">—</div> <div class="stat-label">Stations</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="profPassed">—</div>  <div class="stat-label">Passed</div></div>
+    <div class="stat-card stat-yellow"><div class="stat-value" id="profUpcoming">—</div><div class="stat-label">Upcoming FUs</div></div>
+    <div class="stat-card stat-red">   <div class="stat-value" id="profPct">—</div>     <div class="stat-label">Completion</div></div>
+  </div>
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-header">
+      <div class="card-title">Overall Completion</div>
+      <span id="profPctLabel" class="pct-label">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill pf-bad" id="profProgress" style="width:0%"></div></div>
+  </div>
+  <div class="section-title">Station Training Records</div>
+  <div class="station-grid" id="profileStations"></div>
+  <div class="card" style="margin-top:1.5rem">
+
+    <!-- SETTINGS BUTTON -->
+
+
+    <div class="card-header"><div class="card-title">Upcoming Follow-Up Schedule</div></div>
+
+
+    <div class="upcoming-list" id="profileUpcoming"></div>
+  </div>
+</div>
+
+
+<!-- ══ MODAL: ADD USER ═══════════════════════════ -->
+<div class="modal-overlay hidden" id="addUserModal" onclick="backdropClose(event,'addUserModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add New User</h3>
+      <button class="modal-close" onclick="closeModal('addUserModal')">&#x2715;</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="addUserAlert" class="alert alert-error" style="display:none"></div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" id="auUsername" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" id="auPassword" class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select id="auRole" class="form-control">
+          <option value="">Select Role</option>
+          <option value="training_manager">Training Manager</option>
+          <option value="manager_on_duty">Manager on Duty</option>
+          <option value="general_manager">GM Admin</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addUserModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitAddUser()">Add User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: ADD TRAINING RECORD ════════════════════════════ -->
+<div class="modal-overlay hidden" id="addModal" onclick="backdropClose(event,'addModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Training Record</h3>
+      <button class="modal-close" onclick="closeModal('addModal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="addAlert" class="alert alert-error" style="display:none"></div>
+      <div class="form-group">
+        <label class="form-label">Crew Member *</label>
+        <select class="form-control" id="addCrew"><option value="">— Select Crew —</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Station *</label>
+        <select class="form-control" id="addStation"><option value="">— Select Station —</option></select>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Initial Training Date</label>
+          <input type="date" class="form-control" id="addDate">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Status</label>
+          <select class="form-control" id="addStatus">
+            <option value="Pending">Pending</option>
+            <option value="Pass">Pass</option>
+            <option value="Fail">Fail</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-control" id="addNotes" rows="2" placeholder="Optional…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addModal')">Cancel</button>
+      <button class="btn btn-primary" id="addSubmitBtn" onclick="submitAdd()">Add Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: EDIT TRAINING RECORD ══════════════════════════ -->
+<div class="modal-overlay hidden" id="editModal" onclick="backdropClose(event,'editModal')">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="editModalTitle">Edit Training Record</h3>
+      <button class="modal-close" onclick="closeModal('editModal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="editAlert" class="alert alert-error" style="display:none"></div>
+      <input type="hidden" id="editId">
+      <div class="info-box" id="editInfoBox">
+        <span id="editInfoText"></span>
+        <div class="schedule-preview" id="schedPreview"></div>
+      </div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Initial Training Date</label>
+          <input type="date" class="form-control" id="editInitialDate" onchange="updateSchedulePreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Status</label>
+          <select class="form-control" id="editInitialStatus">
+            <option value="Pending">Pending</option>
+            <option value="Pass">Pass</option>
+            <option value="Fail">Fail</option>
+          </select>
+        </div>
+      </div>
+      <div class="fu-section">
+        <div class="fu-section-title">Follow-Up Trainings (Quarterly)</div>
+        <div id="fuFields"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-control" id="editNotes" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+     <button class="btn btn-danger" id="deleteBtn" onclick="deleteRecord()" style="display:none;">
+  Delete
+</button>
+      <button class="btn btn-ghost" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: STATION ADD ════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="stAddModal" onclick="backdropClose(event,'stAddModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>New Station</h3>
+      <button class="modal-close" onclick="closeModal('stAddModal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="stAddAlert" class="alert alert-error" style="display:none"></div>
+      <div class="form-group">
+        <label class="form-label">Station Name *</label>
+        <input type="text" id="stAddName" class="form-control" placeholder="e.g. Fry Station">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="stAddDesc" class="form-control" rows="2" placeholder="Brief description…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('stAddModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitStAdd()">Create Station</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: STATION EDIT ══════════════════════════════════ -->
+<div class="modal-overlay hidden" id="stEditModal" onclick="backdropClose(event,'stEditModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Station</h3>
+      <button class="modal-close" onclick="closeModal('stEditModal')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="stEditAlert" class="alert alert-error" style="display:none"></div>
+      <input type="hidden" id="stEditId">
+      <div class="form-group">
+        <label class="form-label">Station Name *</label>
+        <input type="text" id="stEditName" class="form-control">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="stEditDesc" class="form-control" rows="2"></textarea>
+      </div>
+      <div class="info-box" id="stEditInfo"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="stDelBtn" onclick="deleteStation()">Delete</button>
+      <button class="btn btn-ghost" onclick="closeModal('stEditModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitStEdit()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="view-archive" class="view page-wrapper" style="display:none">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Archived Training Records</div>
+      <div class="page-subtitle">Restore deleted training records</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Deleted Records</div>
+      <button class="btn btn-ghost btn-sm" onclick="loadArchive()">Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Crew</th>
+            <th>Station</th>
+            <th>Deleted At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="archiveBody">
+          <tr><td colspan="4">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: CREW PROFILE POPUP ════════════════════════════ -->
+<div class="modal-overlay hidden" id="profileModal" onclick="backdropClose(event,'profileModal')">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="profileModalTitle">Crew Profile</h3>
+      <button class="modal-close" onclick="closeModal('profileModal')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="profileModalBody">
+      <div class="loading-msg">Loading…</div>
+    </div>
+  </div>
+</div>
+
+
+<div id="gmSettingsModal" class="modal-overlay hidden" onclick="backdropClose(event,'gmSettingsModal')">
+  <div class="modal">
+
+    <h3>General Manager Settings</h3>
+
+    <label>New Username</label>
+    <input type="text" id="gmNewUsername" class="form-control">
+
+    <hr>
+
+    <label>Old Password</label>
+    <input type="password" id="gmOldPassword" class="form-control">
+
+    <label>New Password</label>
+    <input type="password" id="gmNewPassword" class="form-control">
+
+    <label>Confirm New Password</label>
+    <input type="password" id="gmConfirmPassword" class="form-control">
+
+    <small style="color:#aaa">
+      Password must be 8+ chars, uppercase, lowercase, and special character.
+    </small>
+
+    <div style="margin-top:15px; display:flex; gap:10px;">
+      <button class="btn btn-primary" onclick="submitGMSettings()">
+        Save Changes
+      </button>
+
+      <button class="btn btn-ghost" onclick="closeModal('gmSettingsModal')">
+        Cancel
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═════════ PROFILE SETTINGS MODAL ═════════ -->
+<div class="modal-overlay hidden"
+     id="profileSettingsModal"
+     onclick="backdropClose(event,'profileSettingsModal')">
+
+  <div class="modal modal-lg">
+
+    <div class="modal-header">
+      <h3>My Profile Settings</h3>
+
+      <button class="modal-close"
+        onclick="closeModal('profileSettingsModal')">
+        &#x2715;
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <div id="profileSettingsAlert"
+           class="alert alert-error"
+           style="display:none"></div>
+
+      <!-- REGISTERED DATA -->
+      <div class="info-box" style="margin-bottom:20px">
+        <strong>Registered Information</strong>
+
+        <div style="margin-top:10px">
+          <div><strong>Name:</strong> <span id="profSetName"></span></div>
+          <div><strong>Birthday:</strong> <span id="profSetBirthday"></span></div>
+          <div><strong>Date Hired:</strong> <span id="profSetDateHired"></span></div>
+          <div><strong>Username:</strong> <span id="profSetUsername"></span></div>
+        </div>
+      </div>
+
+      <!-- EDIT BIRTHDAY -->
+      <div class="form-group">
+        <label class="form-label">New Birthday</label>
+
+        <input type="date"
+               id="editBirthday"
+               class="form-control">
+      </div>
+
+      <!-- EDIT DATE HIRED -->
+      <div class="form-group">
+        <label class="form-label">New Date Hired</label>
+
+        <input type="date"
+               id="editDateHired"
+               class="form-control">
+      </div>
+
+      <hr style="margin:20px 0">
+
+      <!-- USERNAME -->
+      <div class="form-group">
+        <label class="form-label">Old Username</label>
+
+        <input type="text"
+               id="oldUsername"
+               class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">New Username</label>
+
+        <input type="text"
+               id="newUsername"
+               class="form-control">
+      </div>
+
+      <hr style="margin:20px 0">
+
+      <!-- PASSWORD -->
+      <div class="form-group">
+        <label class="form-label">Old Password</label>
+
+        <input type="password"
+               id="oldPassword"
+               class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+
+        <input type="password"
+               id="newPassword"
+               class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+
+        <input type="password"
+               id="confirmPassword"
+               class="form-control">
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn btn-ghost"
+        onclick="closeModal('profileSettingsModal')">
+        Cancel
+      </button>
+
+      <button class="btn btn-primary"
+        onclick="saveProfileSettings()">
+        Save Changes
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ LOGOUT CONFIRMATION MODAL ═══════════════════ -->
+<div class="modal-overlay hidden"
+     id="logoutModal"
+     onclick="backdropClose(event,'logoutModal')">
+
+  <div class="modal logout-modal">
+
+    <div class="logout-icon">
+      ⚠
+    </div>
+
+    <h2 class="logout-title">
+      Confirm Logout
+    </h2>
+
+    <p class="logout-text">
+      Are you sure you want to log out?
+    </p>
+
+    <div class="logout-actions">
+
+      <button class="btn btn-ghost"
+        onclick="closeModal('logoutModal')">
+        Cancel
+      </button>
+
+      <button class="btn btn-danger"
+        onclick="confirmLogout()">
+        Yes, Logout
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="uiDialogModal" class="modal-overlay hidden">
+  <div class="modal-card" style="max-width:420px;text-align:center">
+
+    <h3 id="uiDialogTitle">Notice</h3>
+
+    <p id="uiDialogMessage" style="margin:15px 0;color:#ccc"></p>
+
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button id="uiDialogCancel" class="btn btn-ghost">
+        Cancel
+      </button>
+
+      <button id="uiDialogOk" class="btn btn-primary">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="toastContainer"></div>
+
+<footer class="footer" id="appFooter" style="display:none">
+  TrainTrack SVF System &copy; 2026 &mdash; Database: <strong>svf_training_db</strong>
+</footer>
+
+<script>
+
+  
+'use strict';
+/* ════════════════════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════════════════════ */
+const API_BASE = 'api';
+
+/* ════════════════════════════════════════════════════════════
+   SESSION
+════════════════════════════════════════════════════════════ */
+const Session = {
+  set(d)  { localStorage.setItem('tt_user', JSON.stringify(d)); },
+  get()   { try { return JSON.parse(localStorage.getItem('tt_user')); } catch { return null; } },
+  clear() { localStorage.removeItem('tt_user'); }
+};
+
+function applyRolePermissions(role) {
+  const deleteBtn = document.getElementById('deleteBtn');
+  if (!deleteBtn) return;
+
+  if (role === 'training_manager') {
+    deleteBtn.style.display = 'inline-block';
+  } else {
+    deleteBtn.style.display = 'none';
+  }
+
+  if (role === 'manager_on_duty') {
+    deleteBtn.style.display = 'none';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   API — wraps fetch, always returns parsed JSON or throws
+════════════════════════════════════════════════════════════ */
+const API = {
+  async request(url, method = 'GET', body = null) {
+    const opts = {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    };
+
+    if (body) opts.body = JSON.stringify(body);
+
+    const res = await fetch(url, opts);
+    const text = await res.text();
+
+    let data;
+    try { data = JSON.parse(text); }
+    catch { throw new Error('Invalid JSON: ' + text); }
+
+    if (!res.ok) throw new Error(data?.error || 'Server error');
+
+    return data;
+  },
+
+  get(url) {
+    return this.request(url, 'GET');
+  },
+
+  post(url, body) {
+    return this.request(url, 'POST', body);
+  },
+
+  put(url, body) {
+    return this.request(url, 'PUT', body);
+  },
+
+  delete(url) {
+    return this.request(url, 'DELETE');
+  }
+};
+
+/* ════════════════════════════════════════════════════════════
+   STATIONS CACHE
+════════════════════════════════════════════════════════════ */
+const SC = {
+  data: [],
+  async load() {
+    try { this.data = (await API.get(`${API_BASE}/stations.php`)).data || []; }
+    catch { this.data = []; }
+    return this.data;
+  },
+  /* fill a <select> with station options keyed by station_id */
+  fill(el, ph='— Select Station —') {
+    if (!el) return;
+    el.innerHTML = `<option value="">${ph}</option>` +
+      this.data.map(s=>`<option value="${s.id}">${s.station_name}</option>`).join('');
+  }
+};
+
+/* ════════════════════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════════════════════ */
+function toast(msg, type='success', dur=3500) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  const icons = {success:'&#x2713;',error:'&#x2715;',warning:'&#x26A0;',info:'&#x2139;'};
+  t.innerHTML = `<span class="toast-icon">${icons[type]||''}</span>${msg}`;
+  c.appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut 0.3s var(--ease) forwards';
+    setTimeout(() => t.remove(), 320);
+  }, dur);
+}
+/* ════════════════════════════════════════════════════════════
+   UNIVERSAL UI DIALOG SYSTEM (REPLACES alert / confirm)
+════════════════════════════════════════════════════════════ */
+
+const UI = {
+  alert(message, type = 'info') {
+    return new Promise(resolve => {
+      const modal = document.getElementById('uiDialogModal');
+      const msg   = document.getElementById('uiDialogMessage');
+      const title = document.getElementById('uiDialogTitle');
+      const okBtn = document.getElementById('uiDialogOk');
+
+      title.textContent = type === 'error' ? 'Error'
+                         : type === 'success' ? 'Success'
+                         : type === 'warning' ? 'Warning'
+                         : 'Notice';
+
+      msg.textContent = message;
+
+      okBtn.onclick = () => {
+        modal.classList.add('hidden');
+        resolve(true);
+      };
+
+      modal.classList.remove('hidden');
+    });
+  },
+
+  confirm(message, type = 'warning') {
+    return new Promise(resolve => {
+      const modal = document.getElementById('uiDialogModal');
+      const msg   = document.getElementById('uiDialogMessage');
+      const title = document.getElementById('uiDialogTitle');
+      const okBtn = document.getElementById('uiDialogOk');
+      const cancelBtn = document.getElementById('uiDialogCancel');
+
+      title.textContent = type === 'danger' ? 'Confirm Action'
+                         : type === 'warning' ? 'Warning'
+                         : 'Confirm';
+
+      msg.textContent = message;
+
+      modal.classList.remove('hidden');
+
+      okBtn.onclick = () => {
+        modal.classList.add('hidden');
+        resolve(true);
+      };
+
+      cancelBtn.onclick = () => {
+        modal.classList.add('hidden');
+        resolve(false);
+      };
+    });
+  }
+};
+/* ════════════════════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════════════════════ */
+function fmtDate(d) {
+  if (!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('en-PH',
+    {year:'numeric',month:'short',day:'numeric'});
+}
+function fmtDT(d) {
+  if (!d) return '—';
+  return new Date(d).toLocaleDateString('en-PH',
+    {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function badge(status) {
+  const m = {Pass:'badge-pass',Fail:'badge-fail',Pending:'badge-pending','Not Due':'badge-nd'};
+  return `<span class="badge ${m[status]||'badge-nd'}">${status||'Not Due'}</span>`;
+}
+function initials(name) {
+  return (name||'?').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+}
+/* progress fill colour — CSS class, never inline colour */
+function pfClass(pct) { return pct>=80?'pf-ok':pct>=50?'pf-warn':'pf-bad'; }
+
+function calcSchedule(ds) {
+  if (!ds) return [];
+  const base = new Date(ds);
+  return Array.from({length:5},(_,i)=>{
+    const d = new Date(base);
+    d.setMonth(d.getMonth()+(i+1)*3);
+    return d.toISOString().slice(0,10);
+  });
+}
+function crewBtn(id, name) {
+  return `<button onclick="showCrewProfile(${id})" class="crew-link">
+    <span class="mini-avatar">${initials(name)}</span>${name}
+  </button>`;
+}
+
+
+
+/* ════════════════════════════════════════════════════════════
+   VIEW MANAGER
+════════════════════════════════════════════════════════════ */
+const ALL_VIEWS  = [
+  'login',
+  'register',
+  'dashboard',
+  'monitoring',
+  'mod',
+  'stations',
+  'profile',
+  'manageUsers',
+  'archive'
+];
+const AUTH_VIEWS = new Set(['login','register']);
+
+function currentRoleHome() {
+  const u = Session.get();
+  if (!u) return 'login';
+  return {general_manager:'dashboard',training_manager:'monitoring',
+          manager_on_duty:'mod',crew:'profile'}[u.role] || 'login';
+}
+
+function showView(name) {
+  ALL_VIEWS.forEach(v => {
+    const el = document.getElementById(`view-${v}`);
+    if (!el) return;
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  const target = document.getElementById(`view-${name}`);
+  if (target) { target.style.display = ''; target.classList.add('active'); }
+
+  const user   = Session.get();
+  const nav    = document.getElementById('mainNav');
+  const footer = document.getElementById('appFooter');
+  if (!AUTH_VIEWS.has(name) && user) {
+    nav.style.display    = 'flex';
+    footer.style.display = 'block';
+    renderNav(name);
+  } else {
+    nav.style.display    = 'none';
+    footer.style.display = 'none';
+  }
+  window.scrollTo(0,0);
+
+  if (name==='dashboard')  loadDashboard();
+  if (name==='monitoring') loadMonitoring();
+  if (name==='mod')        loadMOD();
+  if (name==='stations')   loadStations();
+ if (name==='profile') loadProfile();
+if (name==='archive') loadArchive();
+if (name==='manageUsers') loadUsers();
+}
+
+/* ════════════════════════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════════════════════════ */
+function renderNav(active) {
+  const user = Session.get();
+  if (!user) return;
+  const roleLinks = {
+  general_manager: [
+    {v:'dashboard',l:'Dashboard'},
+    {v:'mod',l:'Training Records'},
+    {v:'monitoring',l:'Monitoring'},
+    {v:'stations',l:'Stations'}
+  ],
+
+  training_manager: [
+    {v:'monitoring',l:'Monitoring'},
+    {v:'mod',l:'Training Records'},
+    {v:'stations',l:'Stations'},
+    {v:'archive',l:'Archive'} // 👈 ADD THIS
+  ],
+
+  manager_on_duty: [
+    {v:'mod',l:'Training Update'},
+    {v:'stations',l:'Stations'}
+  ],
+
+  crew: [
+    {v:'profile',l:'My Profile'}
+  ]
+};
+  document.getElementById('navLinks').innerHTML =
+    (roleLinks[user.role]||[]).map(l=>
+      `<a class="nav-link ${active===l.v?'active':''}" onclick="showView('${l.v}')">${l.l}</a>`
+    ).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   AUTH
+════════════════════════════════════════════════════════════ */
+function validateUsername(input) {
+  const hint = document.getElementById('usernameHint');
+  const val  = input.value;
+  if (val.includes(' ') || (val.length>0 && !/^[a-zA-Z0-9_]+$/.test(val))) {
+    input.style.borderColor = 'var(--red)';
+    hint.className = 'field-hint hint-error';
+    hint.textContent = 'No spaces — letters, numbers and underscores only';
+  } else if (val.length >= 3) {
+    input.style.borderColor = 'var(--green)';
+    hint.className = 'field-hint hint-ok';
+    hint.textContent = 'Username looks good';
+  } else {
+    input.style.borderColor = '';
+    hint.className = 'field-hint';
+    hint.textContent = 'Letters, numbers, and underscores only';
+  }
+}
+let loginAttempts = 0;
+
+async function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const alertEl  = document.getElementById('loginAlert');
+  const btn      = document.getElementById('loginBtn');
+  alertEl.style.display = 'none';
+  if (!username || !password) {
+    alertEl.textContent = 'Please enter both username and password.';
+    alertEl.style.display = 'flex'; return;
+  }
+  btn.innerHTML = '<span class="spinner"></span>&nbsp; Signing in…';
+  btn.disabled  = true;
+  try {
+    const data = await API.post(`${API_BASE}/login.php`, {username, password});
+
+// 🚨 CHECK FIRST (before session save)
+if (data.locked == 1 || data.locked_account == 1) {
+  showLockedScreen(data);
+  return;
+}
+
+// ONLY STORE SESSION IF NOT LOCKED
+Session.set({
+  username: data.username,
+  role: data.role,
+  name: data.name || data.username,
+  type: data.type,
+  crew_id: data.crew_id || null
+});
+    applyRolePermissions(data.role);
+renderNav(currentRoleHome());
+    toast('Signed in successfully.','success');
+    showView(currentRoleHome());
+ } catch(e) {
+
+  loginAttempts++;
+
+  alertEl.textContent =
+    e.message || 'Invalid credentials.';
+
+  alertEl.style.display = 'flex';
+
+  // SHOW FORGOT PASSWORD AFTER 3 FAILS
+  if (loginAttempts >= 3) {
+
+    document.getElementById(
+      'forgotBox'
+    ).style.display = 'block';
+
+  }
+
+} finally {
+
+  btn.innerHTML = 'Sign In';
+
+  btn.disabled = false;
+
+}
+}
+
+async function resetPassword() {
+  const username = document.getElementById('fpUsername').value.trim();
+  const newPass  = document.getElementById('fpNewPass').value;
+  const confirm  = document.getElementById('fpConfirmPass').value;
+
+  if (!username || !newPass || !confirm) {
+    return toast('All fields are required','error');
+  }
+
+  if (newPass !== confirm) {
+    return toast('Passwords do not match','error');
+  }
+
+  if (newPass.length < 6) {
+    return toast('Password must be at least 6 characters','error');
+  }
+
+  try {
+    await API.post(`${API_BASE}/reset_password.php`, {
+      username,
+      password: newPass
+    });
+
+    toast('Password updated successfully. You can now login.','success');
+
+    // reset attempts + hide form
+    loginAttempts = 0;
+    document.getElementById('forgotBox').style.display = 'none';
+
+  } catch (e) {
+    toast(e.message || 'Reset failed','error');
+  }
+}
+
+async function doRegister() {
+  const name     = document.getElementById('regName').value.trim();
+  const birthday = document.getElementById('regBirthday').value;
+  const dh       = document.getElementById('regDateHired').value;
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm  = document.getElementById('regConfirm').value;
+  const alertEl  = document.getElementById('registerAlert');
+  const btn      = document.getElementById('regBtn');
+  alertEl.style.display = 'none';
+  const err = m => { alertEl.className='alert alert-error'; alertEl.textContent=m; alertEl.style.display='flex'; };
+  if (!name||!birthday||!dh||!username||!password||!confirm) return err('All fields are required.');
+  if (username.includes(' '))             return err('Username cannot contain spaces.');
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) return err('Username: letters, numbers and underscores only.');
+  if (username.length < 3)               return err('Username must be at least 3 characters.');
+  if (password !== confirm)              return err('Passwords do not match.');
+  if (password.length < 6)              return err('Password must be at least 6 characters.');
+  btn.innerHTML = '<span class="spinner"></span>&nbsp; Creating…'; btn.disabled = true;
+  try {
+    await API.post(`${API_BASE}/crew.php`, {name,birthday,date_hired:dh,username,password,confirm_password:confirm});
+    alertEl.className='alert alert-success';
+    alertEl.textContent='Account created! Redirecting to sign in…';
+    alertEl.style.display='flex';
+    setTimeout(()=>showView('login'), 2000);
+  } catch(e) {
+    err(e.message||'Registration failed.');
+    btn.innerHTML='Create Account'; btn.disabled=false;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
+   CREW PROFILE SETTINGS
+═══════════════════════════════════════════════ */
+
+async function openProfileSettingsModal() {
+
+  try {
+
+    const data = await API.get(`${API_BASE}/crew_profile.php`);
+
+    const crew = data.data;
+
+    document.getElementById('profSetName').textContent =
+      crew.name || '—';
+
+    document.getElementById('profSetBirthday').textContent =
+      fmtDate(crew.birthday);
+
+    document.getElementById('profSetDateHired').textContent =
+      fmtDate(crew.date_hired);
+
+    document.getElementById('profSetUsername').textContent =
+      crew.username || '—';
+
+    document.getElementById('editBirthday').value =
+      crew.birthday || '';
+
+    document.getElementById('editDateHired').value =
+      crew.date_hired || '';
+
+    document.getElementById('oldUsername').value = '';
+    document.getElementById('newUsername').value = '';
+
+    document.getElementById('oldPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+
+    openModal('profileSettingsModal');
+
+  } catch (e) {
+
+    toast(e.message || 'Failed to load profile','error');
+
+  }
+}
+
+async function saveProfileSettings() {
+
+  const birthday =
+    document.getElementById('editBirthday').value;
+
+  const date_hired =
+    document.getElementById('editDateHired').value;
+
+  const old_username =
+    document.getElementById('oldUsername').value.trim();
+
+  const new_username =
+    document.getElementById('newUsername').value.trim();
+
+  const old_password =
+    document.getElementById('oldPassword').value;
+
+  const new_password =
+    document.getElementById('newPassword').value;
+
+  const confirm_password =
+    document.getElementById('confirmPassword').value;
+
+  // VALIDATIONS
+
+  if (new_username && !old_username) {
+    return toast('Enter old username','error');
+  }
+
+  if (new_password) {
+
+    if (!old_password) {
+      return toast('Enter old password','error');
+    }
+
+    if (new_password.length < 6) {
+      return toast('Password must be at least 6 characters','error');
+    }
+
+    if (new_password !== confirm_password) {
+      return toast('Passwords do not match','error');
+    }
+  }
+
+  // CONFIRMATION UI
+
+  const ok = confirm(
+    'Are you sure you want to update your profile information?'
+  );
+
+  if (!ok) return;
+
+  try {
+
+    await API.put(`${API_BASE}/crew_profile.php`, {
+
+      birthday,
+      date_hired,
+
+      old_username,
+      new_username,
+
+      old_password,
+      new_password
+
+    });
+
+    toast('Profile updated successfully','success');
+
+    closeModal('profileSettingsModal');
+
+    loadProfile();
+
+  } catch (e) {
+
+    toast(e.message || 'Update failed','error');
+
+  }
+}
+
+
+
+function logout() {
+
+  openModal('logoutModal');
+
+}
+
+function confirmLogout() {
+
+  if (dashInterval) {
+    clearInterval(dashInterval);
+    dashInterval = null;
+  }
+
+  Session.clear();
+
+  closeModal('logoutModal');
+
+  toast('Logged out successfully','info');
+
+  showView('login');
+}
+/* ════════════════════════════════════════════════════════════
+   TABS — FIX: use .active class, not inline style, on panels
+════════════════════════════════════════════════════════════ */
+function switchTab(groupId, panelId, btn, barId) {
+  document.querySelectorAll(`#${groupId} .tab-panel`).forEach(p=>p.classList.remove('active'));
+  document.getElementById(panelId).classList.add('active');
+  document.querySelectorAll(`#${barId} .tab`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ════════════════════════════════════════════════════════════
+   DASHBOARD
+════════════════════════════════════════════════════════════ */
+let dashInterval = null;
+
+async function loadDashboard() {
+  try {
+    const [stats, crew, recs] = await Promise.all([
+      API.get(`${API_BASE}/dashboard.php`),
+      API.get(`${API_BASE}/crew.php`),
+      API.get(`${API_BASE}/training.php`)
+    ]);
+    const s = stats.stats;
+    document.getElementById('dashTotalCrew').textContent     = s.total_crew;
+    document.getElementById('dashTotalStations').textContent = s.total_stations;
+    document.getElementById('dashCrewTrained').textContent   = s.crew_trained;
+    document.getElementById('dashPassed').textContent        = s.completed_initial;
+    document.getElementById('dashPending').textContent       = s.pending_followups;
+    document.getElementById('dashOverdue').textContent       = s.overdue_followups;
+    document.getElementById('dashPctLabel').textContent      = s.completion_percentage+'%';
+    const fill = document.getElementById('dashProgress');
+    fill.style.width = s.completion_percentage+'%';
+    fill.className   = 'progress-fill '+pfClass(s.completion_percentage);
+    document.getElementById('dashLastUpdated').textContent   = 'Updated '+new Date().toLocaleTimeString('en-PH');
+    renderDashStations(stats.station_stats);
+    renderDashRecent(stats.recent_activity);
+    renderDashCrew(crew.data, recs.data);
+    loadDashOverdue();
+    if (!dashInterval) dashInterval = setInterval(loadDashboard, 30000);
+  } catch(e) { toast('Failed to load dashboard.','error'); }
+}
+
+function renderDashStations(stations) {
+  const el = document.getElementById('dashStationStats');
+  if (!stations||!stations.length) { el.innerHTML='<div class="empty-mini">No stations yet</div>'; return; }
+  el.innerHTML = stations.map(s=>{
+    const pct = s.total ? Math.round(s.passed/s.total*100) : 0;
+    return `<div class="st-bar-row">
+      <div class="st-bar-label"><span>${s.station}</span><span>${s.passed}/${s.total} (${pct}%)</span></div>
+      <div class="progress-track"><div class="progress-fill ${pfClass(pct)}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderDashRecent(acts) {
+  const el = document.getElementById('dashRecent');
+  if (!acts||!acts.length) { el.innerHTML='<div class="empty-mini">No activity yet</div>'; return; }
+  el.innerHTML = '<div class="activity-list">'+acts.map(a=>`
+    <div class="activity-item">
+      <div class="act-avatar">${initials(a.crew_name)}</div>
+      <div class="act-info"><div class="act-name">${a.crew_name}</div>
+        <div class="act-meta">${a.station_name} &middot; ${fmtDT(a.last_updated)}</div>
+      </div>
+      ${badge(a.initial_status)}
+    </div>`).join('')+'</div>';
+}
+
+function renderDashCrew(crew, records) {
+  const tbody = document.getElementById('dashCrewBody');
+  if (!crew||!crew.length) { tbody.innerHTML='<tr><td colspan="4" class="td-empty">No crew registered.</td></tr>'; return; }
+  const crewMap = {};
+  (records||[]).forEach(r=>{
+    if (!crewMap[r.crew_id]) crewMap[r.crew_id]={passed:0,total:0};
+    crewMap[r.crew_id].total++;
+    if (r.initial_status==='Pass') crewMap[r.crew_id].passed++;
+  });
+  tbody.innerHTML = crew.map(c=>{
+    const r   = crewMap[c.id]||{passed:0,total:0};
+    const pct = r.total ? Math.round(r.passed/r.total*100) : 0;
+    const lbl = pct===100?'<span class="badge badge-pass">Complete</span>'
+      :pct>0?'<span class="badge badge-pending">In Progress</span>'
+      :'<span class="badge badge-nd">Not Started</span>';
+    return `<tr>
+      <td>${crewBtn(c.id,c.name)}</td>
+      <td class="td-muted">${fmtDate(c.date_hired)}</td>
+      <td><div class="inline-prog">
+        <div class="progress-track" style="width:80px">
+          <div class="progress-fill ${pfClass(pct)}" style="width:${pct}%"></div>
+        </div>
+        <span class="td-muted">${r.passed}/${r.total}</span>
+      </div></td>
+    <td>
+
+  ${lbl}
+
+  ${c.locked_account == 1
+    ? `
+      <button
+        class="btn btn-warning btn-sm"
+        style="margin-left:8px"
+        onclick="unlockCrew(${c.id})">
+        Unlock
+      </button>
+    `
+    : ''
+  }
+
+</td>
+</tr>`;
+  }).join('');
+}
+
+async function loadDashOverdue() {
+  try {
+    const d  = await API.get(`${API_BASE}/training.php?status=overdue`);
+    const ov = d.data||[];
+    document.getElementById('dashOverdueCount').textContent = ov.length;
+    const el = document.getElementById('dashOverdueList');
+    if (!ov.length) { el.innerHTML='<div class="empty-mini">No overdue trainings</div>'; return; }
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Crew</th><th>Station</th><th>Follow-Up</th><th>Due Date</th><th>Days Overdue</th></tr></thead>
+      <tbody>${ov.sort((a,b)=>b.days_overdue-a.days_overdue).map(o=>`
+        <tr><td class="td-bold">${o.crew_name}</td><td>${o.station_name}</td>
+            <td><span class="badge badge-fail">FU ${o.followup_number}</span></td>
+            <td class="td-muted">${fmtDate(o.due_date)}</td>
+            <td><span class="badge badge-fail">+${o.days_overdue}d</span></td></tr>`).join('')}
+      </tbody></table></div>`;
+  } catch(e) { /* non-fatal */ }
+}
+
+async function deleteUser(id) {
+  if (!id) return;
+
+  const ok = await UI.confirm("Delete this user permanently?");
+  if (!ok) return;
+
+  try {
+    const res = await fetch(`api/users.php?id=${id}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      await UI.alert("User deleted successfully", "success");
+
+      // refresh table AFTER delete
+      loadUsers();
+    } else {
+      await UI.alert(data.error || "Delete failed", "error");
+    }
+
+  } catch (e) {
+    await UI.alert(e.message || "Delete failed", "error");
+  }
+}
+
+async function loadUsers() {
+  try {
+    const res = await API.get(`${API_BASE}/users.php`);
+    const users = res.data || [];
+
+    const tbody = document.getElementById('usersBody');
+
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="5">No users found</td></tr>';
+      return;
+    }
+
+    const current = Session.get();
+
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>${u.id}</td>
+        <td>${u.username}</td>
+        <td>${u.role}</td>
+        <td>${fmtDT(u.created_at)}</td>
+       <td>
+  ${
+    current?.role === 'general_manager' &&
+    u.username !== 'gm_admin'
+      ? `<button class="btn btn-danger btn-sm"
+           onclick="deleteUser(${u.id})">
+           Delete
+         </button>`
+      : ''
+  }
+</td>
+
+<td>
+  ${
+    u.locked == 1
+      ? `<button class="btn btn-success btn-sm"
+           onclick="unlockUser(${u.id})">
+           Unlock
+         </button>`
+      : `<button class="btn btn-warning btn-sm"
+           onclick="lockUser(${u.id})">
+           Lock
+         </button>`
+  }
+</td>
+      </tr>
+    `).join('');
+
+  } catch (e) {
+    toast('Failed to load users','error');
+  }
+}
+
+function showLockedScreen(user) {
+  document.body.innerHTML = `
+    <div class="locked-screen">
+      <div class="locked-box">
+        <h1>🔒 Account Locked</h1>
+        <p>Your account has been locked by the administration.</p>
+
+        <button class="btn btn-warning" onclick="requestUnlock('${user.username}')">
+          Request Unlock
+        </button>
+
+        <button class="btn btn-ghost" onclick="logout()">
+          Logout
+        </button>
+      </div>
+    </div>
+  `;
+}
+async function requestUnlock(username) {
+  const res = await API.post(`${API_BASE}/request_unlock.php`, {
+    username
+  });
+
+  alert(res.message || "Unlock request sent");
+}
+async function lockUser(id) {
+  console.log("LOCK CLICKED:", id);
+
+  if (!id) {
+    alert("No ID passed!");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('id', id);
+
+  const res = await fetch(`${API_BASE}/lock_user.php`, {
+    method: 'POST',
+    body: formData
+  });
+
+  const text = await res.text();
+  console.log("RAW RESPONSE:", text);
+
+  try {
+    const data = JSON.parse(text);
+    alert(JSON.stringify(data));
+  } catch (e) {
+    alert("Invalid JSON from PHP");
+  }
+}
+async function unlockUser(id) {
+  if (!id) {
+    toast("Missing user ID", "error");
+    return;
+  }
+
+  const ok = await UI.confirm("Unlock this user account?");
+  if (!ok) return;
+
+  try {
+    const formData = new FormData();
+    formData.append('id', id);
+
+    const res = await fetch(`${API_BASE}/unlock_user.php`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Unlock failed");
+
+    toast("User unlocked successfully", "success");
+    loadUsers();
+
+  } catch (e) {
+    toast(e.message || "Unlock failed", "error");
+  }
+}
+
+async function unlockCrew(id) {
+
+  const ok = await UI.confirm("Unlock this crew account?");
+  if (!ok) return;
+
+  try {
+
+    const formData = new FormData();
+    formData.append('id', id);
+
+    const res = await fetch(`${API_BASE}/unlock_crew.php`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Unlock failed');
+
+    toast('Crew account unlocked successfully', 'success');
+
+    loadDashboard();
+    loadMonitoring();
+
+  } catch (e) {
+    toast(e.message || 'Unlock failed', 'error');
+  }
+}
+
+async function lockCrew(id) {
+
+  const ok = await UI.confirm("Lock this crew account?");
+  if (!ok) return;
+
+  try {
+
+    const formData = new FormData();
+    formData.append('id', id);
+
+    const res = await fetch(`${API_BASE}/lock_crew.php`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Lock failed');
+
+    toast('Crew account locked successfully', 'success');
+
+    loadMonitoring();
+    loadDashboard();
+
+  } catch (e) {
+    toast(e.message || 'Lock failed', 'error');
+  }
+}
+function filterCrewTable() {
+  const q = document.getElementById('dashCrewSearch').value.toLowerCase();
+  document.querySelectorAll('#dashCrewBody tr').forEach(r=>{
+    r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   MONITORING
+════════════════════════════════════════════════════════════ */
+let pendingData=[], overdueData=[], monCrewData=[], monRecords=[];
+
+async function loadMonitoring() {
+  await SC.load();
+  // Fill station filter — use station_name as value for consistent string matching
+  const stFil = document.getElementById('monStFilter');
+  stFil.innerHTML = '<option value="">All Stations</option>'+
+    SC.data.map(s=>`<option value="${s.station_name}">${s.station_name}</option>`).join('');
+
+  try {
+    const [pend,over,crew,recs] = await Promise.all([
+      API.get(`${API_BASE}/training.php?status=pending`),
+      API.get(`${API_BASE}/training.php?status=overdue`),
+      API.get(`${API_BASE}/crew.php`),
+      API.get(`${API_BASE}/training.php`)
+    ]);
+    pendingData=pend.data||[]; overdueData=over.data||[];
+    monCrewData=crew.data||[]; monRecords=recs.data||[];
+    document.getElementById('monPending').textContent  = pendingData.length;
+    document.getElementById('monOverdue').textContent  = overdueData.length;
+    document.getElementById('monCrew').textContent     = monCrewData.length;
+    document.getElementById('monStations').textContent = SC.data.length;
+    renderMonPending(); renderMonOverdue(); renderMonCrew(); renderMonRecords();
+  } catch(e) { toast('Failed to load monitoring data.','error'); }
+}
+
+function renderMonPending() {
+  const tbody = document.getElementById('monPendingBody');
+
+  if (!pendingData.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="td-empty">
+          No pending follow-ups
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // GROUP BY MONTH + YEAR
+  const grouped = {};
+
+  pendingData.forEach(p => {
+    const date = new Date(p.due_date);
+
+    const groupKey = date.toLocaleString('en-PH', {
+      month: 'long',
+      year: 'numeric'
+    });
+
+    if (!grouped[groupKey]) {
+      grouped[groupKey] = [];
+    }
+
+    grouped[groupKey].push(p);
+  });
+
+  let html = '';
+
+  Object.keys(grouped).forEach(group => {
+
+    html += `
+      <tr class="group-header-row">
+        <td colspan="6">
+          <div class="monitor-group-header">
+            ${group}
+            <span class="group-count">
+              ${grouped[group].length} Crew
+            </span>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    grouped[group].forEach(p => {
+
+      const cls =
+        p.days_until_due <= 7
+          ? 'badge-fail'
+          : p.days_until_due <= 30
+          ? 'badge-pending'
+          : 'badge-pass';
+
+      html += `
+        <tr>
+          <td>${crewBtn(p.training_id, p.crew_name)}</td>
+
+          <td>
+            <div class="monitor-station">
+              ${p.station_name}
+            </div>
+          </td>
+
+          <td>
+            <span class="badge badge-pending">
+              FU ${p.followup_number}
+            </span>
+          </td>
+
+          <td class="td-muted">
+            ${fmtDate(p.due_date)}
+          </td>
+
+          <td>
+            <span class="badge ${cls}">
+              ${
+                p.days_until_due === 0
+                  ? 'Today'
+                  : p.days_until_due + 'd'
+              }
+            </span>
+          </td>
+
+          <td>
+            ${badge(p.current_status)}
+          </td>
+        </tr>
+      `;
+    });
+
+  });
+
+  tbody.innerHTML = html;
+}
+
+function renderMonOverdue() {
+  const tbody = document.getElementById('monOverdueBody');
+  if (!overdueData.length) { tbody.innerHTML='<tr><td colspan="6" class="td-empty">No overdue trainings</td></tr>'; return; }
+  tbody.innerHTML = [...overdueData].sort((a,b)=>b.days_overdue-a.days_overdue).map(o=>{
+    const p = o.days_overdue>90?'<span class="badge badge-fail">Critical</span>'
+      :o.days_overdue>30?'<span class="badge badge-pending">High</span>'
+      :'<span class="badge badge-nd">Low</span>';
+    return `<tr>
+      <td>${crewBtn(o.training_id,o.crew_name)}</td><td>${o.station_name}</td>
+      <td><span class="badge badge-fail">FU ${o.followup_number}</span></td>
+      <td class="td-muted">${fmtDate(o.due_date)}</td>
+      <td><span class="badge badge-fail">+${o.days_overdue}d</span></td>
+      <td>${p}</td></tr>`;
+  }).join('');
+}
+
+function renderMonCrew() {
+  const tbody = document.getElementById('monCrewBody');
+  if (!monCrewData.length) { tbody.innerHTML='<tr><td colspan="4" class="td-empty">No crew.</td></tr>'; return; }
+  tbody.innerHTML = monCrewData.map(c=>{
+    const passed=parseInt(c.stations_passed||0), total=parseInt(c.total_records||0);
+    const pct=total?Math.round(passed/total*100):0;
+    return `<tr>
+  <td>
+    <div class="crew-cell">
+      <span class="mini-avatar">${initials(c.name)}</span>
+      <button onclick="showCrewProfile(${c.id})" class="crew-link">${c.name}</button>
+    </div>
+  </td>
+  <td class="td-muted">${fmtDate(c.date_hired)}</td>
+  <td>${passed}/${total}</td>
+  <td>
+    <div class="inline-prog">
+      <div class="progress-track" style="width:80px">
+        <div class="progress-fill ${pfClass(pct)}" style="width:${pct}%"></div>
+      </div>
+      <span class="td-muted">${pct}%</span>
+    </div>
+  </td>
+
+  <!-- ✅ NEW DELETE BUTTON -->
+  <td style="display:flex; gap:6px;">
+
+  ${Session.get()?.role === 'general_manager'
+    ? `
+      <button
+        class="btn btn-danger btn-sm"
+        onclick="deleteCrew(${c.id})">
+        Delete
+      </button>
+
+      ${
+        c.locked_account == 1
+          ? `
+            <button
+              class="btn btn-success btn-sm"
+              onclick="unlockCrew(${c.id})">
+              Unlock
+            </button>
+          `
+          : `
+            <button
+              class="btn btn-warning btn-sm"
+              onclick="lockCrew(${c.id})">
+              Lock
+            </button>
+          `
+      }
+    `
+    : ''
+  }
+
+</td>
+</tr>`;
+  }).join('');
+}
+
+function renderMonRecords() {
+  const tbody = document.getElementById('monRecordsBody');
+  if (!monRecords.length) { tbody.innerHTML='<tr><td colspan="10" class="td-empty">No records.</td></tr>'; return; }
+  // FIX: store station_name in data-station (string) to match filter value
+  tbody.innerHTML = monRecords.map(r=>`<tr data-station="${r.station_name}">
+    <td>${crewBtn(r.crew_id,r.crew_name)}</td><td>${r.station_name}</td>
+    <td class="td-muted">${fmtDate(r.initial_training_date)}</td>
+    <td>${badge(r.initial_status)}</td>
+    <td>${badge(r.followup1)}</td><td>${badge(r.followup2)}</td>
+    <td>${badge(r.followup3)}</td><td>${badge(r.followup4)}</td>
+    <td>${badge(r.followup5)}</td>
+    <td class="td-muted td-mono">${fmtDT(r.last_updated)}</td>
+  </tr>`).join('');
+}
+
+/* FIX: unified filter — text search + optional station string match */
+function filterTable(tbodyId, q, station) {
+  const lower = (q||'').toLowerCase();
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(r=>{
+    const textOk    = !lower   || r.textContent.toLowerCase().includes(lower);
+    const stationOk = !station || (r.dataset.station||'') === station;
+    r.style.display = (textOk && stationOk) ? '' : 'none';
+  });
+}
+
+function exportCSV() {
+  if (!pendingData.length) { toast('No pending data to export.','warning'); return; }
+  const csv = [
+    'Crew,Station,Follow-Up,Due Date,Days Until Due,Status',
+    ...pendingData.map(p=>`"${p.crew_name}","${p.station_name}",FU ${p.followup_number},${p.due_date},${p.days_until_due},${p.current_status}`)
+  ].join('\n');
+  const a = Object.assign(document.createElement('a'),{
+    href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),
+    download:`pending_${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click();
+  toast('CSV exported.','success');
+}
+
+/* ════════════════════════════════════════════════════════════
+   MANAGER ON DUTY
+════════════════════════════════════════════════════════════ */
+let modRecords=[], modCrew=[];
+
+async function loadMOD() {
+  await SC.load();
+  // FIX: store station_id as value — applyModFilters compares String(row.dataset.st) === st
+  const stFil = document.getElementById('modStFilter');
+  stFil.innerHTML = '<option value="">All Stations</option>'+
+    SC.data.map(s=>`<option value="${s.id}">${s.station_name}</option>`).join('');
+  try {
+    const [recs,crew] = await Promise.all([API.get(`${API_BASE}/training.php`),API.get(`${API_BASE}/crew.php`)]);
+    modRecords=recs.data||[]; modCrew=crew.data||[];
+    document.getElementById('addCrew').innerHTML =
+      '<option value="">— Select Crew —</option>'+modCrew.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    SC.fill(document.getElementById('addStation'));
+    document.getElementById('modTotal').textContent   = modRecords.length;
+    document.getElementById('modPassed').textContent  = modRecords.filter(r=>r.initial_status==='Pass').length;
+    document.getElementById('modPending').textContent = modRecords.filter(r=>r.initial_status==='Pending').length;
+    document.getElementById('modFailed').textContent  = modRecords.filter(r=>r.initial_status==='Fail').length;
+    renderMODTable(modRecords);
+  } catch(e) { toast('Failed to load records.','error'); }
+}
+
+function renderMODTable(records) {
+  const safe = (v) => (v === undefined || v === null ? '' : v);
+  const tbody = document.getElementById('modBody');
+  if (!records.length) { tbody.innerHTML='<tr><td colspan="11" class="td-empty">No training records found.</td></tr>'; return; }
+  // FIX: data-st stores station_id as string, data-stat stores initial_status
+  tbody.innerHTML = records.map(r=>`
+    <tr data-st="${r.station_id}" data-stat="${r.initial_status}">
+      <td>${crewBtn(r.crew_id,r.crew_name)}</td>
+      <td>${r.station_name}</td>
+      <td class="td-muted">${fmtDate(r.initial_training_date)}</td>
+     <td>
+  ${renderStatus(
+    "Initial",
+    r.initial_status,
+    r.initial_training_date,
+    r.verifiers?.initial || r.initial_verified_by_name
+  )}
+</td>
+
+<td>
+  ${renderStatus(
+    "F1",
+    r.followup1,
+    r.followup1_date,
+    r.verifiers?.followup1 || r.f1_verified_by_name
+  )}
+</td>
+
+<td>
+  ${renderStatus(
+    "F2",
+    r.followup2,
+    r.followup2_date,
+    r.verifiers?.followup2 || r.f2_verified_by_name
+  )}
+</td>
+
+<td>
+  ${renderStatus(
+    "F3",
+    r.followup3,
+    r.followup3_date,
+    r.verifiers?.followup3 || r.f3_verified_by_name
+  )}
+</td>
+
+<td>
+  ${renderStatus(
+    "F4",
+    r.followup4,
+    r.followup4_date,
+    r.verifiers?.followup4 || r.f4_verified_by_name
+  )}
+</td>
+
+<td>
+  ${renderStatus(
+    "F5",
+    r.followup5,
+    r.followup5_date,
+    r.verifiers?.followup5 || r.f5_verified_by_name
+  )}
+</td>
+      <td class="td-muted td-mono">${fmtDT(r.last_updated)}</td>
+      <td><button class="btn btn-sm btn-primary"
+        onclick='openEditModal(${JSON.stringify(r).replace(/'/g,"&#39;")})'>Edit</button></td>
+    </tr>`).join('');
+}
+
+function applyModFilters() {
+  const q  = document.getElementById('modSearch').value.toLowerCase();
+  const st = document.getElementById('modStFilter').value;   // station_id string
+  const sx = document.getElementById('modStatFilter').value; // status string
+  document.querySelectorAll('#modBody tr').forEach(row=>{
+    // FIX: compare String(dataset.st) so number/string mismatch never occurs
+    row.style.display=(
+      (!q  || row.textContent.toLowerCase().includes(q)) &&
+      (!st || String(row.dataset.st)   === String(st)) &&
+      (!sx || String(row.dataset.stat) === String(sx))
+    )?'':'none';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   ADD MODAL
+════════════════════════════════════════════════════════════ */
+function openAddModal() {
+  document.getElementById('addAlert').style.display='none';
+  ['addCrew','addStation','addDate','addNotes'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  document.getElementById('addStatus').value='Pending';
+  document.getElementById('addModal').classList.remove('hidden');
+}
+
+async function submitAdd() {
+  const crew_id    = document.getElementById('addCrew').value;
+  const station_id = document.getElementById('addStation').value;
+  const dt         = document.getElementById('addDate').value;
+  const status     = document.getElementById('addStatus').value;
+  const notes      = document.getElementById('addNotes').value;
+  const alertEl    = document.getElementById('addAlert');
+  alertEl.style.display='none';
+  if (!crew_id||!station_id) {
+    alertEl.textContent='Please select both a crew member and a station.';
+    alertEl.style.display='flex'; return;
+  }
+  const btn=document.getElementById('addSubmitBtn');
+  btn.innerHTML='<span class="spinner"></span>&nbsp; Saving…'; btn.disabled=true;
+  try {
+    await API.post(`${API_BASE}/training.php`,{crew_id:parseInt(crew_id),station_id:parseInt(station_id),initial_training_date:dt||null,initial_status:status,notes});
+    toast('Training record added.','success');
+    closeModal('addModal'); loadMOD();
+  } catch(e) { alertEl.textContent=e.message||'Failed.'; alertEl.style.display='flex'; }
+  finally { btn.innerHTML='Add Record'; btn.disabled=false; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   EDIT MODAL
+════════════════════════════════════════════════════════════ */
+function openEditModal(r) {
+  if (!r||!r.id) { toast('Record ID missing — refresh and try again.','error'); return; }
+  document.getElementById('editId').value             = r.id;
+  document.getElementById('editModalTitle').textContent = `Edit: ${r.crew_name} \u2014 ${r.station_name}`;
+  // FIX: write to #editInfoText not full innerHTML, so schedPreview element persists
+  document.getElementById('editInfoText').innerHTML   =
+    `<strong>${r.crew_name}</strong> &nbsp;&middot;&nbsp; ${r.station_name} &nbsp;&middot;&nbsp; Record <span class="td-mono">#${r.id}</span>`;
+  document.getElementById('schedPreview').textContent = '';
+  document.getElementById('editInitialDate').value    = r.initial_training_date||'';
+  document.getElementById('editInitialStatus').value  = r.initial_status||'Pending';
+  document.getElementById('editNotes').value          = r.notes||'';
+  document.getElementById('editAlert').style.display  = 'none';
+  renderFUFields(r);
+  updateSchedulePreview();
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function renderFUFields(r) {
+  document.getElementById('fuFields').innerHTML =
+    Array.from({length:5},(_,i)=>{
+      const n=i+1, val=r[`followup${n}`]||'Not Due', dv=r[`followup${n}_date`]||'';
+      return `<div class="fu-row">
+        <span class="fu-label">Follow-Up ${n}</span>
+        <select class="form-control" id="fu${n}S">
+          <option value="Not Due" ${val==='Not Due'?'selected':''}>Not Due</option>
+          <option value="Pending" ${val==='Pending'?'selected':''}>Pending</option>
+          <option value="Pass"    ${val==='Pass'   ?'selected':''}>Pass</option>
+          <option value="Fail"    ${val==='Fail'   ?'selected':''}>Fail</option>
+        </select>
+        <input type="date" class="form-control" id="fu${n}D" value="${dv}">
+      </div>`;
+    }).join('');
+}
+
+// FIX: reads editInitialDate directly, writes only to #schedPreview — never touches crew info
+function updateSchedulePreview() {
+  const date = document.getElementById('editInitialDate').value;
+  const prev = document.getElementById('schedPreview');
+  if (!prev) return;
+  if (!date) { prev.textContent=''; return; }
+  const sch = calcSchedule(date);
+  prev.textContent = 'Schedule: '+sch.map((d,i)=>`FU${i+1} ${fmtDate(d)}`).join(' \u00B7 ');
+}
+
+async function submitEdit() {
+  const id      = document.getElementById('editId').value;
+  const alertEl = document.getElementById('editAlert');
+  alertEl.style.display='none';
+  // FIX: explicit guard
+  if (!id||id===''||id==='0') {
+    alertEl.textContent='Record ID is missing. Close and re-open the edit modal.';
+    alertEl.style.display='flex'; return;
+  }
+  const body = {
+    initial_training_date: document.getElementById('editInitialDate').value||null,
+    initial_status:        document.getElementById('editInitialStatus').value,
+    notes:                 document.getElementById('editNotes').value
+  };
+  for (let i=1;i<=5;i++) {
+    body[`followup${i}`]      = document.getElementById(`fu${i}S`).value;
+    body[`followup${i}_date`] = document.getElementById(`fu${i}D`).value||null;
+  }
+  try {
+    // FIX: ?id= query param — works on all PHP/Apache configs
+    await API.put(`${API_BASE}/training.php?id=${id}`, body);
+    toast('Training record saved.','success');
+    closeModal('editModal'); loadMOD();
+  } catch(e) { alertEl.textContent=e.message||'Update failed.'; alertEl.style.display='flex'; }
+}
+async function deleteCrew(id) {
+  if (!confirm('Permanently delete this crew? This cannot be undone.')) return;
+
+  try {
+    await API.delete(`${API_BASE}/crew.php?id=${id}`);
+    toast('Crew deleted successfully', 'success');
+    loadMonitoring(); // refresh list
+  } catch (e) {
+    toast(e.message || 'Delete failed', 'error');
+  }
+}
+async function deleteRecord() {
+  const id = document.getElementById('editId').value;
+
+  if (!id) {
+    toast('No record ID found.', 'error');
+    return;
+  }
+
+  if (!confirm('Delete this training record? This will move to Archive.')) return;
+
+  try {
+    await API.delete(`${API_BASE}/training.php?id=${id}`);
+
+    toast('Record moved to archive.', 'success');
+
+    closeModal('editModal');
+
+    loadMOD();
+
+    // AUTO REFRESH ARCHIVE
+    loadArchive();
+
+  } catch (e) {
+    toast('Delete failed: ' + e.message, 'error');
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATIONS
+════════════════════════════════════════════════════════════ */
+let stationsData=[];
+
+async function loadStations() {
+  try {
+    const d=await API.get(`${API_BASE}/stations.php`);
+    stationsData=d.data||[];
+    document.getElementById('stTotal').textContent=stationsData.length;
+    document.getElementById('stRecs').textContent =stationsData.reduce((s,st)=>s+parseInt(st.total_records||0),0);
+    document.getElementById('stPass').textContent =stationsData.reduce((s,st)=>s+parseInt(st.passed_count||0),0);
+    renderStations();
+  } catch(e) { toast('Failed to load stations.','error'); }
+}
+
+
+async function loadArchive() {
+  try {
+    const res = await API.get(`${API_BASE}/training.php?status=archived`);
+
+    const rows = res.data || [];
+    const body = document.getElementById('archiveBody');
+
+    if (!rows.length) {
+      body.innerHTML = `
+        <tr>
+          <td colspan="4" class="td-empty">No archived records</td>
+        </tr>
+      `;
+      return;
+    }
+
+    body.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.crew_id}</td>
+        <td>${r.station_id}</td>
+        <td>${fmtDT(r.archived_at)}</td>
+        <td>
+          <button class="btn btn-sm btn-primary"
+            onclick="restoreRecord(${r.id})">
+            Restore
+          </button>
+        </td>
+      </tr>
+    `).join('');
+
+  } catch (e) {
+    toast('Failed to load archive', 'error');
+  }
+}
+
+function renderStatus(label, status, date, manager) {
+  return `
+    <div>
+      <strong>${label}</strong>
+      <span class="badge ${status.toLowerCase()}">${status}</span>
+      <div>${date || '-'}</div>
+      <small style="color:#aaa">
+        Verified by: ${manager || '—'}
+      </small>
+    </div>
+  `;
+}
+
+function renderStations() {
+  const grid=document.getElementById('stGrid'), empty=document.getElementById('stEmpty');
+  if (!stationsData.length) { grid.style.display='none'; empty.style.display='block'; return; }
+  grid.style.display='grid'; empty.style.display='none';
+  grid.innerHTML=stationsData.map(s=>{
+    const total=parseInt(s.total_records||0),passed=parseInt(s.passed_count||0);
+    const pct=total?Math.round(passed/total*100):0;
+    return `<div class="card st-card-item" style="margin-bottom:0">
+      <div class="sc-top">
+        <div><div class="sc-name">${s.station_name}</div><div class="sc-desc">${s.description||'No description'}</div></div>
+        <button class="btn btn-sm btn-ghost" onclick='openStEditModal(${JSON.stringify(s).replace(/'/g,"&#39;")})'>Edit</button>
+      </div>
+      <div class="sc-counts">
+        <div class="sc-count"><div class="sc-num">${total}</div><div class="sc-lbl">Records</div></div>
+        <div class="sc-count is-pass"><div class="sc-num">${passed}</div><div class="sc-lbl">Passed</div></div>
+      </div>
+      <div class="sc-pct-row"><span>Pass Rate</span><span>${pct}%</span></div>
+      <div class="progress-track"><div class="progress-fill ${pfClass(pct)}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function openStAddModal() {
+  document.getElementById('stAddAlert').style.display='none';
+  document.getElementById('stAddName').value='';
+  document.getElementById('stAddDesc').value='';
+  document.getElementById('stAddModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('stAddName').focus(),80);
+}
+async function submitStAdd() {
+  const name=document.getElementById('stAddName').value.trim(), desc=document.getElementById('stAddDesc').value.trim();
+  const alertEl=document.getElementById('stAddAlert'); alertEl.style.display='none';
+  if (!name) { alertEl.textContent='Station name is required.'; alertEl.style.display='flex'; return; }
+  try { await API.post(`${API_BASE}/stations.php`,{station_name:name,description:desc}); toast('Station created.','success'); closeModal('stAddModal'); loadStations(); }
+  catch(e) { alertEl.textContent=e.message||'Failed.'; alertEl.style.display='flex'; }
+}
+
+function openStEditModal(s) {
+  document.getElementById('stEditAlert').style.display='none';
+  document.getElementById('stEditId').value  =s.id;
+  document.getElementById('stEditName').value=s.station_name;
+  document.getElementById('stEditDesc').value=s.description||'';
+  const total=parseInt(s.total_records||0), btn=document.getElementById('stDelBtn');
+  const info=document.getElementById('stEditInfo');
+  if (total>0) {
+    info.innerHTML=`This station has <strong>${total} record(s)</strong>. Renaming is allowed; deletion is blocked while records exist.`;
+    btn.disabled=true; btn.style.opacity='0.40';
+  } else {
+    info.innerHTML='No training records attached — this station can be safely deleted.';
+    btn.disabled=false; btn.style.opacity='1';
+  }
+  document.getElementById('stEditModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('stEditName').focus(),80);
+}
+async function submitStEdit() {
+  const id=document.getElementById('stEditId').value, name=document.getElementById('stEditName').value.trim(), desc=document.getElementById('stEditDesc').value.trim();
+  const alertEl=document.getElementById('stEditAlert'); alertEl.style.display='none';
+  if (!name) { alertEl.textContent='Station name is required.'; alertEl.style.display='flex'; return; }
+  try { await API.put(`${API_BASE}/stations.php?id=${id}`,{station_name:name,description:desc}); toast('Station updated.','success'); closeModal('stEditModal'); loadStations(); }
+  catch(e) { alertEl.textContent=e.message||'Failed.'; alertEl.style.display='flex'; }
+}
+async function deleteStation() {
+  const id=document.getElementById('stEditId').value, name=document.getElementById('stEditName').value;
+  if (!confirm(`Delete station "${name}"? This cannot be undone.`)) return;
+  try { await API.delete(`${API_BASE}/stations.php?id=${id}`); toast('Station deleted.','success'); closeModal('stEditModal'); loadStations(); }
+  catch(e) { const a=document.getElementById('stEditAlert'); a.textContent=e.message||'Delete failed.'; a.style.display='flex'; }
+}
+
+
+
+/* ════════════════════════════════════════════════════════════
+   CREW PROFILE VIEW
+════════════════════════════════════════════════════════════ */
+async function loadProfile() {
+  const user = Session.get();
+
+  // DEBUG + SAFETY CHECK
+  if (!user) {
+    toast('No session found. Please login again.', 'error');
+    showView('login');
+    return;
+  }
+
+  if (!user.crew_id) {
+    console.error('Missing crew_id in session:', user);
+
+    toast('Crew profile failed to load. Missing crew ID.', 'error');
+
+    document.getElementById('profileName').textContent = 'Profile Load Failed';
+    document.getElementById('profileMeta').textContent =
+      'crew_id is missing from login session';
+
+    return;
+  }
+
+  try {
+    const [cr, tr] = await Promise.all([
+      API.get(`${API_BASE}/crew.php?id=${user.crew_id}`),
+      API.get(`${API_BASE}/training.php?crew_id=${user.crew_id}`)
+    ]);
+
+    console.log('Crew Data:', cr);
+    console.log('Training Data:', tr);
+
+   const crewData = Array.isArray(cr.data) ? cr.data[0] : cr.data;
+renderProfileView(crewData, tr.data || []);
+
+  } catch (e) {
+    console.error(e);
+
+    toast('Failed to load profile.', 'error');
+
+    document.getElementById('profileName').textContent =
+      'Failed to load profile';
+
+    document.getElementById('profileMeta').textContent =
+      e.message || 'Unknown error';
+  }
+}
+
+//ADD USER
+function openAddUserModal() {
+  document.getElementById('addUserAlert').style.display = 'none';
+  document.getElementById('auUsername').value = '';
+  document.getElementById('auPassword').value = '';
+  document.getElementById('auRole').value = '';
+
+  document.getElementById('addUserModal').classList.remove('hidden');
+}
+
+async function submitAddUser() {
+  const username = document.getElementById('auUsername').value.trim();
+  const password = document.getElementById('auPassword').value;
+  const role     = document.getElementById('auRole').value;
+
+  const alertEl = document.getElementById('addUserAlert');
+  alertEl.style.display = 'none';
+
+  if (!username || !password || !role) {
+    alertEl.textContent = "All fields are required.";
+    alertEl.style.display = 'flex';
+    return;
+  }
+
+  try {
+    const res = await API.post(`${API_BASE}/add_user.php`, {
+      username, password, role
+    });
+
+    toast("User added successfully!", "success");
+    closeModal('addUserModal');
+
+  } catch (e) {
+    alertEl.textContent = e.message || "Failed to add user";
+    alertEl.style.display = 'flex';
+  }
+}
+
+
+function restoreRecord(id) {
+  if (!confirm("Restore this training record?")) return;
+
+  API.post(`${API_BASE}/training.php?restore_id=${id}`)
+    .then(res => {
+      toast(res.message || "Restored successfully", "success");
+      loadArchive();
+      loadMOD();
+    })
+    .catch(err => {
+      toast(err.message || "Restore failed", "error");
+    });
+}
+
+function renderProfileView(crew, records) {
+  const today=new Date().toISOString().slice(0,10);
+  const passed=records.filter(r=>r.initial_status==='Pass').length;
+  const total=records.length, pct=total?Math.round(passed/total*100):0;
+  document.getElementById('profileAvatar').textContent=initials(crew.name);
+  document.getElementById('profileName').textContent=crew.name;
+  document.getElementById('profileMeta').textContent=`Born ${fmtDate(crew.birthday)}  \u00B7  Hired ${fmtDate(crew.date_hired)}  \u00B7  @${crew.username}`;
+  const lvl=passed>=total&&total>0?'<span class="badge badge-pass"> Check for Trained Stations</span>'
+    :passed>=4?'<span class="badge badge-pass">Intermediate Trainee</span>'
+    :passed>=1?'<span class="badge badge-pending">Junior Trainee</span>'
+    :'<span class="badge badge-nd">New Crew</span>';
+  document.getElementById('profileBadge').innerHTML=lvl;
+  let upcoming=0;
+  records.forEach(r=>{ calcSchedule(r.initial_training_date).forEach((due,i)=>{ const fu=r[`followup${i+1}`]; if(fu!=='Pass'&&fu!=='Fail'&&due>=today) upcoming++; }); });
+  document.getElementById('profTotalSt').textContent  =total;
+  document.getElementById('profPassed').textContent   =passed;
+  document.getElementById('profUpcoming').textContent =upcoming;
+  document.getElementById('profPct').textContent      =pct+'%';
+  document.getElementById('profPctLabel').textContent =pct+'%';
+  const pf=document.getElementById('profProgress');
+  pf.style.width=pct+'%'; pf.className='progress-fill '+pfClass(pct);
+
+  document.getElementById('profileStations').innerHTML=records.map(r=>{
+    const sch=calcSchedule(r.initial_training_date);
+    const fuRows=Array.from({length:5},(_,i)=>{
+      const n=i+1,status=r[`followup${n}`]||'Not Due',fuDate=r[`followup${n}_date`],dueDate=sch[i]||null;
+      const overdue=dueDate&&dueDate<today&&status!=='Pass'&&status!=='Fail';
+      return `<div class="fu-item">
+        <span class="fu-label">Follow-Up ${n}</span>
+        ${badge(overdue?'Fail':status)}
+        <span class="td-muted" style="margin-left:auto">${fuDate?fmtDate(fuDate):dueDate?fmtDate(dueDate):'—'}</span>
+      </div>`;
+    }).join('');
+    return `<div class="station-card">
+      <div class="station-card-header"><span class="station-name">${r.station_name}</span>${badge(r.initial_status)}</div>
+      <div class="station-card-body">
+        <div class="fu-item" style="border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:4px">
+          <span class="fu-label">Initial</span>${badge(r.initial_status)}
+          <span class="td-muted" style="margin-left:auto">${fmtDate(r.initial_training_date)}</span>
+        </div>${fuRows}
+      </div></div>`;
+  }).join('');
+
+  const upList=[];
+  records.forEach(r=>{ calcSchedule(r.initial_training_date).forEach((due,i)=>{ const fu=r[`followup${i+1}`]; if(fu!=='Pass'&&fu!=='Fail') upList.push({station:r.station_name,n:i+1,dueDate:due,daysAway:Math.round((new Date(due)-new Date(today))/86400000)}); }); });
+  upList.sort((a,b)=>new Date(a.dueDate)-new Date(b.dueDate));
+  const ul=document.getElementById('profileUpcoming');
+  if (!upList.length) { ul.innerHTML='<div class="empty-mini">No upcoming follow-ups</div>'; return; }
+  ul.innerHTML=upList.slice(0,10).map(u=>{
+    const isOver=u.daysAway<0, isUrg=!isOver&&u.daysAway<=14;
+    const cls=isOver?'is-overdue':isUrg?'is-urgent':'is-ok';
+    const b=isOver?`<span class="badge badge-fail">Overdue ${Math.abs(u.daysAway)}d</span>`
+      :isUrg?`<span class="badge badge-pending">In ${u.daysAway}d</span>`
+      :`<span class="badge badge-pass">In ${u.daysAway}d</span>`;
+    return `<div class="upcoming-item ${cls}">
+      <div style="flex:1"><div class="upcoming-item-label">${u.station} \u2014 Follow-Up ${u.n}</div>
+        <div class="upcoming-item-meta">${isOver?'Was due':'Due'}: ${fmtDate(u.dueDate)}</div></div>${b}
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════════════════════════
+   CREW PROFILE POPUP MODAL
+════════════════════════════════════════════════════════════ */
+async function showCrewProfile(crewId) {
+  document.getElementById('profileModal').classList.remove('hidden');
+  const body=document.getElementById('profileModalBody');
+  body.innerHTML='<div class="loading-msg">Loading…</div>';
+  try {
+    const [cr,tr]=await Promise.all([API.get(`${API_BASE}/crew.php?id=${crewId}`),API.get(`${API_BASE}/training.php?crew_id=${crewId}`)]);
+    const crew=cr.data, records=tr.data, today=new Date().toISOString().slice(0,10);
+    const passed=records.filter(r=>r.initial_status==='Pass').length;
+    document.getElementById('profileModalTitle').textContent=crew.name+' \u2014 Training Profile';
+    const cards=records.map(r=>{
+      const sch=calcSchedule(r.initial_training_date);
+      const fuRows=Array.from({length:5},(_,i)=>{
+        const n=i+1,status=r[`followup${n}`]||'Not Due',fuDate=r[`followup${n}_date`],dueDate=sch[i]||null;
+        const overdue=dueDate&&dueDate<today&&status!=='Pass'&&status!=='Fail';
+        return `<div class="fu-item"><span class="fu-label">Follow-Up ${n}</span>${badge(overdue?'Fail':status)}<span class="td-muted" style="margin-left:auto">${fuDate?fmtDate(fuDate):dueDate?fmtDate(dueDate):'—'}</span></div>`;
+      }).join('');
+      return `<div class="station-card"><div class="station-card-header"><span class="station-name">${r.station_name}</span>${badge(r.initial_status)}</div>
+        <div class="station-card-body"><div class="fu-item" style="border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:4px"><span class="fu-label">Initial</span>${badge(r.initial_status)}<span class="td-muted" style="margin-left:auto">${fmtDate(r.initial_training_date)}</span></div>${fuRows}</div></div>`;
+    }).join('');
+    body.innerHTML=`<div class="profile-mini-hero"><div class="profile-avatar-sm">${initials(crew.name)}</div>
+      <div><div class="profile-mini-name">${crew.name}</div>
+        <div class="td-muted">Hired: ${fmtDate(crew.date_hired)} &middot; ${passed}/${records.length} stations passed</div>
+      </div></div>
+      ${records.length?`<div class="station-grid">${cards}</div>`:'<div class="empty-state"><div class="empty-icon">[ ]</div><h3>No training records yet</h3></div>'}`;
+  } catch(e) { body.innerHTML=`<div class="alert alert-error">${e.message}</div>`; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MODAL HELPERS
+════════════════════════════════════════════════════════════ */
+
+function openGMSettingsModal() {
+  const user = Session.get();
+
+  if (!user || user.role !== 'general_manager') {
+    toast('Access denied', 'error');
+    return;
+  }
+
+  document.getElementById('gmNewUsername').value = '';
+  document.getElementById('gmOldPassword').value = '';
+  document.getElementById('gmNewPassword').value = '';
+  document.getElementById('gmConfirmPassword').value = '';
+
+  openModal('gmSettingsModal');
+}
+
+/* PASSWORD RULE CHECK */
+function isStrongPassword(pw) {
+  return /[A-Z]/.test(pw) &&
+         /[a-z]/.test(pw) &&
+         /[0-9]/.test(pw) &&
+         /[^A-Za-z0-9]/.test(pw) &&
+         pw.length >= 8;
+}
+
+async function submitGMSettings() {
+
+  const newUsername = document.getElementById('gmNewUsername').value.trim();
+  const oldPassword = document.getElementById('gmOldPassword').value;
+  const newPassword = document.getElementById('gmNewPassword').value;
+  const confirm     = document.getElementById('gmConfirmPassword').value;
+
+  if (!newUsername && !newPassword) {
+    return toast('Nothing to update', 'warning');
+  }
+
+  if (newPassword) {
+
+    if (!oldPassword) {
+      return toast('Enter old password', 'error');
+    }
+
+    if (!isStrongPassword(newPassword)) {
+      return toast('Weak password: use upper, lower, number, special char (8+)', 'error');
+    }
+
+    if (newPassword !== confirm) {
+      return toast('Passwords do not match', 'error');
+    }
+  }
+
+  const ok = window.confirm('Are you sure you want to save these changes?');
+  if (!ok) return;
+
+  try {
+    const res = await API.post(`${API_BASE}/gm_settings.php`, {
+      new_username: newUsername,
+      old_password: oldPassword,
+      new_password: newPassword
+    });
+
+    toast('Settings updated successfully', 'success');
+
+    closeModal('gmSettingsModal');
+
+    // update session if username changed
+    const session = Session.get();
+    if (session && newUsername) {
+      session.username = newUsername;
+      Session.set(session);
+    }
+
+  } catch (e) {
+    toast(e.message || 'Update failed', 'error');
+  }
+}
+
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (!el) {
+    console.error('Modal not found:', id);
+    return;
+  }
+  el.classList.remove('hidden');
+}
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+// FIX: backdrop click — only close if click is directly on overlay, not a child
+function backdropClose(event, modalId) {
+  if (event.target===event.currentTarget) closeModal(modalId);
+}
+
+document.addEventListener('keydown', e=>{
+  if (e.key==='Escape')
+    document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(m=>m.classList.add('hidden'));
+});
+document.getElementById('loginPassword').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('loginUsername').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+(function init(){
+  const user=Session.get();
+  if (user) showView(currentRoleHome());
+  else      showView('login');
+})();
+</script>
+</body>
+</html>
