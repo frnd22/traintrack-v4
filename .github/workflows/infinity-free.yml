@@ -1,7 +1,7 @@
 name: Deploy to mcdo-traintrack.infinityfree.me
 
 on:
-  workflow dispatch: # Uncomment below to deploy on push instead
+  workflow_dispatch: # Uncomment below to deploy on push instead
   push:
     branches:
       - main
